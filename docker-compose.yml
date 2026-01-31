@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Serviço de Banco de Dados
+  mongo:
+    image: mongo:4.4
+    container_name: blogging-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+  # Serviço de Backend (API) 
+  api:
+    build: ./backend # aponta para a pasta do backend 
+    container_name: blogging-api    
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGO_URI=mongodb://mongo:27017/blogging_escola
+      - SECRET=segredo_desenvolvimento
+    depends_on:
+      - mongo
+    networks:
+      - app-network 
+
+  # Serviço de Frontend(site)
+  web:
+    build: ./frontend # Aponta para a pasta do frontend
+    container_name: blogging-web
+    ports:
+      - "8080:80" # acessaremos em localhost: 8080
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    driver: bridge
