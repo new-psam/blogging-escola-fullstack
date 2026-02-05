@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://blogging-escola-backend.onrender.com';
 
 async function login(email, senha) {
     const response = await fetch(`${BASE_URL}/auth/login`, {
