@@ -1,18 +1,37 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneve, Verdana, sans-serif; /* Fonte mais moderna */
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    /* display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 20px; */
 }
 
 .container {
     background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    max-width: 1400px;
+    width: 95%;
+    margin: 40px;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+/* Container dos Cards (O Grid) */
+#posts-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px; 
+    margin-top: 30px;
     width: 100%;
-    max-width: 600px;
+}
+/* Tratamento para quando estiver "Carregando..." ou vazio */
+#posts-list p {
+    grid-column: 1 / -1; /* Ocupa a largura toda */
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
 }
 
 input, textarea, select {

@@ -10,7 +10,7 @@ const app = express();
 // 1. Configuração do CORS (Para o Front-end funcionar)
 app.use(cors({
     origin: [
-        "https://blogging-frontend-sua-url.onrender.com", // Seu site no ar
+        "https://blogging-escola-frontend.onrender.com", // Seu site no ar
         "http://127.0.0.1:5500", // Live Server (IP padrão)
         "http://localhost:5500"  // Live Server (Nome alternativo)
     ]
