@@ -1,31 +1,16 @@
-# Blogging Escola - Front-end 🏫
+# React + Vite
 
-Interface web para a plataforma de gestão de aulas. Projeto desenvolvido com HTML5, CSS3 e Vanilla JS, focando em simplicidade e testes automatizados.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 🚀 Funcionalidades
+Currently, two official plugins are available:
 
-* **Autenticação:** Login e Cadastro (Professor/Aluno).
-* **Área do Aluno:** Listagem de aulas e busca por palavra-chave.
-* **Área do Professor:** Dashboard para Criar, Editar e Excluir aulas.
-* **Leitura:** Página dedicada para leitura de postagens.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## 🛠️ Tecnologias
+## React Compiler
 
-* **HTML5 & CSS3**
-* **JavaScript (ES6+)**
-* **Jest & JSDOM:** Testes unitários e de interface.
-* **GitHub Actions:** Pipeline de CI/CD automatizado.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## 📦 Como Rodar
+## Expanding the ESLint configuration
 
-1. Certifique-se de que o **Back-end** está rodando na porta 3000.
-2. Clone este repositório.
-3. Abra o arquivo `src/index.html` com o **Live Server** (VS Code) ou abra direto no navegador.
-
-## 🧪 Como Rodar os Testes
-
-Este projeto possui testes automatizados para garantir a qualidade da interface e da lógica de conexão.
-
-```bash
-npm install
-npm test
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
