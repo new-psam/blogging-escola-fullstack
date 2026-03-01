@@ -1,11 +1,11 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@import "tailwindcss";
+
+@theme {
+  --color-amarelo-fundo: #FFF9E6;
 }
 
 body {
-  background-color: #FFF9E6; /* O amarelo do seu Figma */
-  font-family: 'Inter' , sans-serif;
+  background-color: var(--color-amarelo-fundo);
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
