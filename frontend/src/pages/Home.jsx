@@ -1,55 +1,76 @@
 import PostCard from "../components/PostCard";
+import { useState, useEffect } from "react";
+import { api } from "../services/api";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 
-// Nossa lista de dados falsos para testar o visual da tela
-const mockPosts = [
-  {
-    id: 1,
-    title: "O Futuro do React",
-    author: "Profa. Mariana",
-    date: "15 Fev 2026",
-    content: "Nesta aula, vamos entender como a componentização ajuda a escalar projetos grandes e organizar o código."
-  },
-  {
-    id: 2,
-    title: "O Futuro do React na Educação",
-    author: "Profa. Mariana",
-    date: "15 Fev 2026",
-    content: "Nesta aula, vamos entender como a componentização ajuda a escalar projetos grandes e organizar o código."
-  },
-  {
-    id: 3,
-    title: "O Mercado de Ações",
-    author: "Prof. Marcelino",
-    date: "18 Fev 2026",
-    content: "Nesta aula, vamos entender como funciona o mercado de ações e a mente dos investidores."
-  }
-];
 
-function Home() {
+export default function Home() {
+    // Estados para guardar os posts, o texto da busca e o status de carregamento
+    const [posts, setPosts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    // O useEffect roda uma vez assim que a tela abre, buscando os dados do backend
+    useEffect(()=>{
+        async function fetchPosts() {
+            try {
+              // Faz o GET na rota /posts do seu backend
+              const response = await api.get('/posts');
+              setPosts(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar os posts:", error);
+            }finally{
+                setLoading(false); // Tira o aviso de carregamento, dando erro ou não
+            }
+        }
+        fetchPosts();
+    }, [])
+
+    // Mágica do Filtro: cria uma nova lista apenas com os posts que batem com a busca
+    const filteredPosts = posts.filter(post => {
+        const term = searchTerm.toLowerCase();
+        // Proteção: garante que os campos existem antes de tentar buscar
+        const titleMatch = post.titulo?.toLowerCase().includes(term);
+        const contentMatch = post.conteudo?.toLowerCase().includes(term);
+        return titleMatch || contentMatch;
+
+    });
+
     return (
-    <div>
-       {/* Cabeçalho da Home com a Barra de Busca */} 
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-            <h1 className="text-2xl font-bold text-gray-800">Últimas Publicações</h1>
+        <div>
 
-            <div className="w-full md:w-72">
-                <input
-                    type="text"
-                    placeholder="Buscar publicações..."
-                    className="w-full px-4 py-2 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"    
-                />
+            {/* Cabeçalho da Home com a Barra de Busca */} 
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <h1 className="text-2xl font-bold text-gray-800">Últimas Publicações</h1>
+
+                <div className="w-full md:w-72">
+                    <input
+                        type="text"
+                        placeholder="Buscar por título ou conteúdo"
+                        value={searchTerm}
+                        onChange={(e)=> setSearchTerm(e.target.value)}
+                        className="w-full px-4 py-2 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"    
+                    />
+                </div>
             </div>
-        </div>
 
-        {/* Grid Responsivo: 1 coluna no celular, 3 no desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockPosts.map((post)=> (
-                <PostCard key={post.id} post={post}/>
-            ))}
+            {/* Área de conteúdo: Mostra loading, mensagem de vazio ou o grid */}
+            {loading ? (
+                <Loading mensagem="Carregando publicações..."/>
+            ):(
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredPosts.length > 0 ? (
+                        filteredPosts.map((post)=> (
+                            <PostCard key={post.id} post={post}/>
+                        ))
+                    ):(
+                        <ErrorMessage titulo="Nenhuma publicação encontrada" mensagem={ "Não achamos nada para `${searchTerm}`."} urlLink={null} />)
+                    }
+                </div>
+            )}
+            
         </div>
-    </div>
         
     )
 }
-
-export default Home;

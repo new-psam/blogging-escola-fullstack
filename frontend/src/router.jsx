@@ -14,7 +14,7 @@ import EditPost from './pages/EditPost';
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />, // O App agora éo nosso "esqueleto principal
+        element: <App />, // O App agora é o nosso "esqueleto principal
         children: [
             { path: "/", element: <Home/> },
             { path: "/post/:id", element: <Post/> },
