@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: [ 'professor', 'aluno'], //Define papéis permitidos
-        default: 'aluno'
+        default: 'professor'
     }
 });
 

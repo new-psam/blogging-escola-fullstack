@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
-// Impoartando a aestrutura base
+// Importando a estrutura base
 import App from './App';
+import PrivateRoute from './components/PrivateRoute';
 
 // importando as páginas
 import Home from './pages/Home';
@@ -16,13 +17,21 @@ export const router = createBrowserRouter([
         path: "/",
         element: <App />, // O App agora é o nosso "esqueleto principal
         children: [
+            // 🟢 ROTAS PÚBLICAS (Qualquer um entra)
             { path: "/", element: <Home/> },
             { path: "/post/:id", element: <Post/> },
             { path: "/login", element: <Login/> },
             { path: "/register", element: <Register/> },
-            { path: "/dashboard", element: <Dashboard/> },
-            { path: "/new-post", element: <NewPost/> },
-            { path: "/edit-post/:id", element: <EditPost/> },
+
+            // 🔴 ROTAS PRIVADAS (Só passa quem tem Token)
+            {
+                element: <PrivateRoute />,
+                children: [
+                    { path: "/dashboard", element: <Dashboard/> },
+                    { path: "/new-post", element: <NewPost/> },
+                    { path: "/edit-post/:id", element: <EditPost/> },
+                ]
+            }
         ],
 
     },

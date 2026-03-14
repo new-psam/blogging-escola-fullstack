@@ -14,7 +14,7 @@ export default function Input({label, type="text", ...props}){
             <input
                 type={type}
                 className="w-full px-4 border border-gray-300 rounded-xl focus:ring-2
-                focus:ring-blue-500 focus:outline-none bg-gray-500 focus:bg-white transition-colors"
+                focus:ring-blue-500 focus:outline-none bg-gray-200 focus:bg-white transition-colors"
                 {...props}
             />
         </div>
