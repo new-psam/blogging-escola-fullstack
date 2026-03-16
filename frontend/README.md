@@ -1,16 +1,42 @@
-# React + Vite
+# Front-end - Projeto Blogging Escola 🏫 (FIVAM)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface de usuário moderna e responsiva para a plataforma de gerenciamento de postagens escolares. Desenvolvida para oferecer uma experiência de leitura agradável para os alunos e um painel de gestão intuitivo para os professores.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologias Utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React & Vite:** Biblioteca principal para construção da interface e bundler de alta performance.
+- **Tailwind CSS:** Framework de utilitários CSS para estilização ágil e design responsivo (Mobile-first).
+- **React Router Dom:** Gerenciamento de rotas protegidas e navegação entre páginas (SPA).
+- **Axios:** Cliente HTTP para consumo e integração com a API RESTful do back-end.
+- **Context API:** Gerenciamento de estado global da aplicação (Autenticação e Sessão).
+- **Vitest & Testing Library:** Ambiente moderno e robusto para testes unitários e de integração de componentes React.
 
-## React Compiler
+## ⚙️ Funcionalidades
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🎓 Área Pública (Alunos e Visitantes)
 
-## Expanding the ESLint configuration
+- **Feed de Publicações:** Listagem de todos os artigos em formato de cards.
+- **Busca Integrada:** Campo de pesquisa na Home para filtrar postagens por título ou conteúdo.
+- **Leitura Otimizada:** Páginas de artigos com tipografia ajustada para leitura (layout de livro).
+- **Design Responsivo:** Adaptação perfeita para visualização em celulares, tablets e desktops.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 👩‍🏫 Área Restrita (Professores)
+
+- **Autenticação:** Sistema de Login e Cadastro (com definição de _role_).
+- **Proteção de Rotas:** Bloqueio de acesso de alunos ao painel de gestão.
+- **Painel de Controle (Dashboard):** Visão geral das publicações do professor logado.
+- **Gestão de Conteúdo (CRUD):** Formulários para criar, editar e excluir postagens exclusivas do autor.
+
+## 🛠️ Como Rodar o Projeto (Localmente)
+
+### Pré-requisitos
+
+- Node.js instalado (versão 18+ recomendada).
+- O **Back-end** do projeto já deve estar rodando na sua máquina (preferencialmente na porta `3000`).
+
+### Passo a Passo
+
+1. Acesse a pasta do frontend no terminal:
+   ```bash
+   cd frontend
+   ```
