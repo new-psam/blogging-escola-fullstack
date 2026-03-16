@@ -1,16 +1,19 @@
-import { Link } from "react-router-dom"
-import { useState, useEffect } from "react";
+import { Link, Navigate } from "react-router-dom"
+import { useState, useEffect, useContext } from "react";
 import { api } from "../services/api";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function Dashboard() {
+    // Pega os dados do usuário logado
+    const { user, isAuthenticated } = useContext(AuthContext);
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    
     // Assim que o Dashboard carregar, ele vai buscar a lista de posts
     useEffect(() => {
         carregarPosts();
     }, []);
-
+    
     async function carregarPosts(){ 
         try {
             const response = await api.get('/posts');
@@ -22,7 +25,7 @@ export default function Dashboard() {
             setLoading(false);
         }
     };
-
+    
     // A função do Poder de Destruição
     const handleDelete = async (id) => {
         // confirmar antes...
@@ -39,15 +42,19 @@ export default function Dashboard() {
             }
         }
     };
-
+    
+    // Se a pessoa não estiver logada, ou se NÃO for professor, manda de volta pra Home!
+    if (!isAuthenticated || user?.role !== 'professor') {
+        return <Navigate to="/" replace />;
+    } 
     return (
         <div className="w-full max-w-5xl mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 mt-8">
 
             {/* Cabeçalho do Painel */}
             <div className="flex flex-col sm:flex-row justify-between items-center mb-8 pb-6 border-b border-gray-100 gap-4">
                 <div className="text-center sm:text-left">
-                    <h1 className="text-2xl font-bold text-gray-900">Meu Painel</h1>
-                    <p className="text-gray-500 text-sm mt-1">Gerencie publicações do EduBlog</p>
+                    <h1 className="text-2xl font-bold text-gray-900">Painel do Professor</h1>
+                    <p className="text-gray-500 text-sm mt-1">Gerencie publicações do FIVAM</p>
                 </div>
 
                 {/* Botão criar post */}

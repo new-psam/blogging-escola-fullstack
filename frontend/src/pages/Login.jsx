@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import Input from "../components/Input";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function Login() {
     const [email , setEmail ] = useState('');
@@ -10,6 +12,8 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+
+    const { signIn } = useContext(AuthContext);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -21,16 +25,26 @@ export default function Login() {
             const response = await api.post('/auth/login', {email, senha });
 
             // 2. O backend respondeu com sucesso! Pegamos o token
-            const token = response.data.token;
+            const { token, user } = response.data;
 
-            // 3. Guardamos o token no "cofre" do navegador (Local Storage)
-            localStorage.setItem('@EduBlog:token', token);
+            // 3. Montamos os dados garantindo que o nome E a role (se existir) entrem no pacote
+            const userData = { 
+                nome: user?.nome || email.split('@')[0],
+                role: user?.role // <-- AQUI ESTÁ A MÁGICA! Agora a role vai pro Contexto!
+            };
 
-            //4. Ensinando o Axios a usar o token
+            // 4. Salva no contexto e no navegador
+            signIn(token, userData);
+            
+            //5. Ensinando o Axios a usar o token
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-            // 5. Redirecionamos o professor para a sua área de gestão (que vamos criar a seguir)
-            navigate('/dashboard');
+            // 6. Navegação Inteligente: Professor vai pro Painel, Aluno vai pra Home
+            if (userData.role === 'professor') {
+                navigate('/dashboard');
+            } else {
+                navigate('/');
+            }
 
         } catch (error) {
             console.error("Erro no login:", error);
@@ -47,8 +61,8 @@ export default function Login() {
             rounded-2xl shadow-sm border border-gray-100 mt-12"
         >
             <div className="text-center mb-10">
-                <h2 className="text-2xl font-bold text-gray-900">Acesso ao Professor</h2>
-                <p className="text-sm text-gray-500 mt-2">Entre para gerenciar suas publicações</p>
+                <h2 className="text-2xl font-bold text-gray-900">Faça seu Login</h2>
+                <p className="text-sm text-gray-500 mt-2">Entre para comentar ou gerenciar suas publicações</p>
             </div>
 
             {/* Se houver algum erro, mostramos esta caixa vermelha */}

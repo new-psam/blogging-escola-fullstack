@@ -14,9 +14,12 @@ export default function Home() {
     // O useEffect roda uma vez assim que a tela abre, buscando os dados do backend
     useEffect(()=>{
         async function fetchPosts() {
+            setLoading(true);
             try {
-              // Faz o GET na rota /posts do seu backend
-              const response = await api.get('/posts');
+              // Se o usuário digitou algo, usa a rota de busca. Se estiver vazio, lista todos!
+              const rota = searchTerm ? `/posts/search?q=${searchTerm}` : '/posts';
+              const response = await api.get(rota);
+
               setPosts(response.data);
             } catch (error) {
                 console.error("Erro ao buscar os posts:", error);
@@ -24,18 +27,17 @@ export default function Home() {
                 setLoading(false); // Tira o aviso de carregamento, dando erro ou não
             }
         }
-        fetchPosts();
-    }, [])
 
-    // Mágica do Filtro: cria uma nova lista apenas com os posts que batem com a busca
-    const filteredPosts = posts.filter(post => {
-        const term = searchTerm.toLowerCase();
-        // Proteção: garante que os campos existem antes de tentar buscar
-        const titleMatch = post.titulo?.toLowerCase().includes(term);
-        const contentMatch = post.conteudo?.toLowerCase().includes(term);
-        return titleMatch || contentMatch;
+        // Espera o usuário parar de digitar por 500ms antes de chamar a API.
+        // Isso evita que o seu front-end "metralhe" o banco de dados a cada letra digitada!
+        const delayDebounce = setTimeout(() => {
+            fetchPosts();
+        }, 500);
 
-    });
+        // Limpa o tempo se o usuário voltar a digitar antes de meio segundo
+        return () => clearTimeout(delayDebounce);
+    }, [searchTerm]); // Array de dependências: roda o useEffect quando o searchTerm mudar.
+
 
     return (
         <div>
@@ -60,12 +62,12 @@ export default function Home() {
                 <Loading mensagem="Carregando publicações..."/>
             ):(
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredPosts.length > 0 ? (
-                        filteredPosts.map((post)=> (
+                    {posts.length > 0 ? (
+                        posts.map((post)=> (
                             <PostCard key={post._id} post={post}/>
                         ))
                     ):(
-                        <ErrorMessage titulo="Nenhuma publicação encontrada" mensagem={ "Não achamos nada para `${searchTerm}`."} urlLink={null} />)
+                        <ErrorMessage titulo="Nenhuma publicação encontrada" mensagem={ `Não achamos nada para "${searchTerm}".`} urlLink={null} />)
                     }
                 </div>
             )}

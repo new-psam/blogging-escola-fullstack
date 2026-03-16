@@ -1,53 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../services/api";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import { formatarData } from "../utils/dateUtils";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function Post() {
     // Captura o ID da URL (ex: /post/65ecf3...)
     const { id } = useParams();
 
     const [post, setPost] = useState(null);
+    const [comentarios, setComentarios] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    // 💬 DADOS FALSOS (Mock) de comentários para montarmos a tela
-    const [comentarios, setComentarios] = useState([
-        { id: 1, autor: "Profa. Ana", texto: "Excelente reflexão, Marcelo! Vai ajudar muito nossos alunos.", data: "09/03/2026" },
-        { id: 2, autor: "Aluno João", texto: "Gostei muito do texto. Ansioso pelas próximas aulas.", data: "10/03/2026" }
-    ]);
     const [novoComentario, setNovoComentario] = useState('');
+
+    //Contexto: sabemos se está logado e quem é o usuário!
+    const { isAuthenticated, user } = useContext(AuthContext);
 
     // Busca a publicação específica no banco de dados
     useEffect(()=>{
-        async function fetchPost(){
+        async function fetchPostAndComments(){
             try {
-                const response = await api.get(`/posts/${id}`);
-                setPost(response.data);
+                const [resPost, resComentarios] = await Promise.all([
+                    api.get(`/posts/${id}`),
+                    api.get(`/posts/${id}/comments`)
+                ]);
+
+                setPost(resPost.data);
+                setComentarios(resComentarios.data)
             } catch (error) {
-                console.error("Erro ao buscar a publicação", error);
+                console.error("Erro ao buscar dados", error);
             }finally{
                 setLoading(false);
             }
         }
-        fetchPost();
+        fetchPostAndComments();
     }, [id]);
 
-    // Função "fake" apenas para o botão de comentar funcionar visualmente na tela
-    const handleComentar = (e) => {
+    
+    const handleComentar = async (e) => {
         e.preventDefault();
         if(!novoComentario.trim()) return;
 
-        const comentarioNovo = {
-            id: Date.now(),
-            autor: "Visitante",
-            texto: novoComentario,
-            data: new Date()
-        };
+        try {
+            //Não precisamos passar o Token aqui porque 
+            // o seu AuthContext já ensinou o Axios a mandar ele automaticamente!
+            const response = await api.post(`/posts/${id}/comments`, {
+                texto: novoComentario,
+                // Pega o nome real do usuário logado (com fallback de segurança)
+                autor: user?.nome || 'Aluno Logado'
+            });
+            setComentarios([response.data, ...comentarios]);
+            setNovoComentario('');
+        } catch (error) {
+            console.error("Erro ao publicar comentário", error);
+            alert("Erro ao enviar o comentário. Sua sessão pode ter expirado.");
+        }
 
-        setComentarios([...comentarios, comentarioNovo]);
-        setNovoComentario('');
     };
 
     //1. Tela de Carregamento
@@ -76,43 +86,69 @@ export default function Post() {
                 </header>
 
                 {/* O whitespace-pre-wrap garante que as quebras de linha que o autor digitou sejam respeitadas na tela */}
-                <div className="prose max-w-none text-gray-700 leading-relaxed mb-8 whitespace-pre-wrap">
+                <div className="prose max-w-none text-gray-700 leading-relaxed mb-8 whitespace-pre-wrap text-justify">
                     {post.conteudo}
                 </div>
             </div>
 
-            {/* Sessão de Comentários (com fundo amarelo claro para destacar) */}
+            {/* Sessão de Comentários */}
             <section className="bg-amarelo-fundo p-8 border-t border-gray-100">
                 <h3 className="text-xl font-bold text-gray-800 mb-6">Comentários ({comentarios.length})</h3>
 
-                {/* Formulário Fake de Comentário */}
-                <form onSubmit={handleComentar} className="mb-8">
-                    <textarea
-                        value={novoComentario}
-                        onChange={(e)=> setNovoComentario(e.target.value)}
-                        placeholder="O que você achou dessa publicação?"
-                        className="w-full p-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white resize-none h-24 mb-3"
-                    />
-                    <button
-                        type="submit"
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                    >
-                        Comentar
-                    </button>
-                </form>
+                {/* Renderização Condicional baseada no Contexto */}
+                {isAuthenticated ? (
+                    <form onSubmit={handleComentar} className="mb-8">
+                        <textarea
+                            value={novoComentario}
+                            onChange={(e)=> setNovoComentario(e.target.value)}
+                            placeholder="O que você achou dessa publicação?"
+                            className="w-full p-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white resize-none h-24 mb-3"
+                        />
+                        <button
+                            type="submit"
+                            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                        >
+                            Comentar
+                        </button>
+                    </form>
+
+                ) : (
+                    <div className="mb-8 p-5 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <p className="font-medium text-sm md:text-base">
+                            Você precisa estar logado para deixar um comentário.
+                        </p>
+                        <div className="flex gap-3">
+                            <Link to="/login" className="px-4 py-2 bg-white border border-blue-300 rounded text-blue-700 font-semibold hover:bg-blue-100
+                             transition-colors">
+                                Fazer Login
+                            </Link>
+                            <Link to="/register" className="px-4 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 transition-colors">
+                                Cadastrar
+                            </Link>
+                        </div>
+                    </div>   
+                )}
 
                 {/* Lista de Comentários */}
                 <div className="space-y-4">
-                    {comentarios.map(comentario => (
-                        <div key={comentario.id} className="bg-white p-4 rounded-xl sahdow-sm border border-gray-100">
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="font-bold text-sm text-gray-800">{comentario.autor}</span>
-                                <span className="text-xs text-gray-500">{formatarData(comentario.data)}</span>
+
+                    {comentarios.length === 0 ? (
+                        <p className="text-gray-500 text-center py-4">Seja o primeiro a comentar!</p>
+                    ) : (
+                        comentarios.map(comentario => (
+                            <div key={comentario._id} className="bg-white p-4 rounded-xl sahdow-sm border border-gray-100">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="font-bold text-sm text-gray-800">{comentario.autor}</span>
+                                    <span className="text-xs text-gray-500">{formatarData(comentario.dataCriacao)}</span>
+                                </div>
+                                <p className="text-gray-600 text-sm">{comentario.texto}</p>
                             </div>
-                            <p className="text-gray-600 text-sm">{comentario.texto}</p>
-                        </div>
-                    ))}    
-                </div>   
+                        ))    
+                    )} 
+   
+                </div>
+
+
             </section>
 
         </article>

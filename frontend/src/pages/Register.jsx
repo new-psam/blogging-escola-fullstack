@@ -8,6 +8,7 @@ export default function Register(){
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [role, setRole] = useState('aluno')
 
     const { loading, setLoading, erro, setErro, navigate } = useFormAction();
 
@@ -17,7 +18,7 @@ export default function Register(){
         setLoading(true);
 
         try {
-            await api.post('/auth/register', {nome, email, senha});
+            await api.post('/auth/register', {nome, email, senha, role});
             navigate('/login');
         } catch (error) {
             console.error("Erro no cadastro:", error);
@@ -32,7 +33,7 @@ export default function Register(){
         >
             <div className="text-center mb-10">
                 <h2 className="text-2xl font-bold text-gray-900">Criar Conta</h2>
-                <p className="text-sm text-gray-500 mt-2">Junte-se ao EduBlog como docente</p>
+                <p className="text-sm text-gray-500 mt-2">Junte-se ao EduBlog</p>
             </div>
 
             {erro && (
@@ -45,7 +46,7 @@ export default function Register(){
                 <Input
                     label="Nome Completo"
                     type="text"
-                    placeholder="Prof/a. Seu Nome"
+                    placeholder="Seu Nome"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                     required
@@ -68,6 +69,21 @@ export default function Register(){
                     onChange={(e) => setSenha(e.target.value)}
                     required
                 />
+
+                <div className="mb-8">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Eu sou:
+                    </label>
+                    <select
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        className="w-full p-3 border boder-gray-300  rounded-xl focus:ring-2 focus:ring-blue-500
+                        bg-gray-200 focus:bg-white transition-colors "
+                    >
+                        <option value="aluno">Aluno</option>
+                        <option value="professor">Professor</option>
+                    </select>
+                </div>
 
                 <button
                     type="submit"

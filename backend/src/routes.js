@@ -17,14 +17,19 @@ routes.get('/posts', PostController.index);
 routes.get('/posts/search', PostController.search);
 routes.get('/posts/:id', PostController.show);
 
+routes.get('/posts/:id/comments', PostController.searchCom);
+
 // --- Daqui para baixo, precisa estar logado (Aluno ou Professor) ---
 routes.use(authMiddleware);
 
 // Leitura (Aluno e Professor)
 
+routes.post('/posts/:id/comments', PostController.createCom);
+
 // Escrita/Gestão (Apenas Professor)
 routes.post('/posts', isProfessor, PostController.store);
 routes.put('/posts/:id', isProfessor, PostController.update);
 routes.delete('/posts/:id', isProfessor, PostController.delete);
+
 
 module.exports = routes;

@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormAction } from "../hooks/useFormAction";
 import { api } from "../services/api";
 import Input from "../components/Input";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function NewPost() {
+    const { user } = useContext(AuthContext);
+
     const [titulo, setTitulo] = useState('');
-    const [autor, setAutor] = useState('');
+    const [autor, setAutor] = useState(user?.nome || '');
     const [conteudo, setConteudo] = useState('');
 
     const { loading, setLoading, erro, setErro, navigate } = useFormAction();
+
+    useContext(()=> {
+        if (user?.nome) {
+            setAutor(user.nome);
+        }
+    }, [user])
 
     const handleCreatePost = async (e) => {
         e.preventDefault();
