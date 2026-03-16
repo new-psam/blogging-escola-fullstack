@@ -303,6 +303,79 @@
                     }
                 }
             }
+        },
+        "/posts/{id}/comments": {
+            "get":{
+               "tags": ["Posts"],
+               "summary": "Listar comentários de um post específico",
+               "parameters": [
+                    {
+                        "name":"id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do Post",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+               ],
+               "responses":{
+                    "200":{
+                        "description": "Lista de comentários retornada com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+               }
+            },
+            "post":{
+                "tags":["Posts"],
+                "summary": "Criar um comentário (Requer Login)",
+                "security":[
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters":[
+                    {
+                        "name":"id",
+                        "in":"path",
+                        "required": true,
+                        "description": "ID do Post",
+                        "schema":{
+                            "type":"string"
+                        }
+                    }
+                ],
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "texto": {
+                                        "type":"string",
+                                        "example": "Excelente post, Professor!"
+                                    },
+                                    "autor":{
+                                        "type":"string",
+                                        "example":"João (Aluno)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "201":{
+                        "description": "Comentário criado com sucesso!"
+                    },
+                    "401":{
+                        "description":"Não autorizado (Token ausente ou inválido)"
+                    }
+                }
+            }
         }
     },
     "components": {

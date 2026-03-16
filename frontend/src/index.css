@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --color-amarelo-fundo: #FFF9E6;
+}
+
+body {
+  background-color: var(--color-amarelo-fundo);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

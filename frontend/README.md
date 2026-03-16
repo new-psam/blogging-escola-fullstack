@@ -1,31 +1,42 @@
-# Blogging Escola - Front-end 🏫
+# Front-end - Projeto Blogging Escola 🏫 (FIVAM)
 
-Interface web para a plataforma de gestão de aulas. Projeto desenvolvido com HTML5, CSS3 e Vanilla JS, focando em simplicidade e testes automatizados.
+Interface de usuário moderna e responsiva para a plataforma de gerenciamento de postagens escolares. Desenvolvida para oferecer uma experiência de leitura agradável para os alunos e um painel de gestão intuitivo para os professores.
 
-## 🚀 Funcionalidades
+## 🚀 Tecnologias Utilizadas
 
-* **Autenticação:** Login e Cadastro (Professor/Aluno).
-* **Área do Aluno:** Listagem de aulas e busca por palavra-chave.
-* **Área do Professor:** Dashboard para Criar, Editar e Excluir aulas.
-* **Leitura:** Página dedicada para leitura de postagens.
+- **React & Vite:** Biblioteca principal para construção da interface e bundler de alta performance.
+- **Tailwind CSS:** Framework de utilitários CSS para estilização ágil e design responsivo (Mobile-first).
+- **React Router Dom:** Gerenciamento de rotas protegidas e navegação entre páginas (SPA).
+- **Axios:** Cliente HTTP para consumo e integração com a API RESTful do back-end.
+- **Context API:** Gerenciamento de estado global da aplicação (Autenticação e Sessão).
+- **Vitest & Testing Library:** Ambiente moderno e robusto para testes unitários e de integração de componentes React.
 
-## 🛠️ Tecnologias
+## ⚙️ Funcionalidades
 
-* **HTML5 & CSS3**
-* **JavaScript (ES6+)**
-* **Jest & JSDOM:** Testes unitários e de interface.
-* **GitHub Actions:** Pipeline de CI/CD automatizado.
+### 🎓 Área Pública (Alunos e Visitantes)
 
-## 📦 Como Rodar
+- **Feed de Publicações:** Listagem de todos os artigos em formato de cards.
+- **Busca Integrada:** Campo de pesquisa na Home para filtrar postagens por título ou conteúdo.
+- **Leitura Otimizada:** Páginas de artigos com tipografia ajustada para leitura (layout de livro).
+- **Design Responsivo:** Adaptação perfeita para visualização em celulares, tablets e desktops.
 
-1. Certifique-se de que o **Back-end** está rodando na porta 3000.
-2. Clone este repositório.
-3. Abra o arquivo `src/index.html` com o **Live Server** (VS Code) ou abra direto no navegador.
+### 👩‍🏫 Área Restrita (Professores)
 
-## 🧪 Como Rodar os Testes
+- **Autenticação:** Sistema de Login e Cadastro (com definição de _role_).
+- **Proteção de Rotas:** Bloqueio de acesso de alunos ao painel de gestão.
+- **Painel de Controle (Dashboard):** Visão geral das publicações do professor logado.
+- **Gestão de Conteúdo (CRUD):** Formulários para criar, editar e excluir postagens exclusivas do autor.
 
-Este projeto possui testes automatizados para garantir a qualidade da interface e da lógica de conexão.
+## 🛠️ Como Rodar o Projeto (Localmente)
 
-```bash
-npm install
-npm test
+### Pré-requisitos
+
+- Node.js instalado (versão 18+ recomendada).
+- O **Back-end** do projeto já deve estar rodando na sua máquina (preferencialmente na porta `3000`).
+
+### Passo a Passo
+
+1. Acesse a pasta do frontend no terminal:
+   ```bash
+   cd frontend
+   ```

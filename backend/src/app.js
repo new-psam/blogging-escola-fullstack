@@ -12,7 +12,8 @@ app.use(cors({
     origin: [
         "https://blogging-escola-frontend.onrender.com", // Seu site no ar
         "http://127.0.0.1:5500", // Live Server (IP padrão)
-        "http://localhost:5500"  // Live Server (Nome alternativo)
+        "http://localhost:5500",  // Live Server (Nome alternativo)
+        "http://localhost:5173"
     ]
 }));
 

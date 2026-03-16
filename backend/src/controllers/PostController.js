@@ -1,4 +1,6 @@
+
 const Post = require('../models/Post');
+const Comment = require('../models/Comment');
 
 module.exports = {
     // Lista Pública (Alunos e Professores)
@@ -70,10 +72,42 @@ module.exports = {
             if (!post) {
                 return res.status(404).json({ error: 'Post não encontrado' });
             }
+            // apga comentários
+            await Comment.deleteMany({ postId: req.params.id });
+
             return res.status(204).send(); 
         } catch (err) {
             return res.status(400).json({ error: 'Erro ao deletar' });
         }
         
+    },
+
+    async createCom(req, res) {
+        try {
+            const { texto, autor } = req.body;
+            const postId = req.params.id;
+
+            const novoComentario = await Comment.create({
+                texto,
+                autor: autor || 'Aluno Anônimo',
+                postId
+            });
+
+            res.status(201).json(novoComentario);
+        } catch (error) {
+            res.status(500).json({error: 'Erro ao criar comentário.'});
+        }
+    },
+
+    async searchCom(req, res) {
+        try {
+            const postId = req.params.id;
+            // Busca todos os comentários que têm o ID desse post, ordenados do mais novo pro mais velho
+            const comentarios = await Comment.find({postId}).sort({ dataCriacao: -1});
+
+            res.status(200).json(comentarios);
+        } catch (error) {
+            res.status(500).json({error: 'Erro ao buscar comentários'});
+        }
     }
 };
