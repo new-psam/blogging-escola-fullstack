@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     senha: { type: String, required: true },
     role: {
         type: String,
-        enum: [ 'professor', 'aluno'], //Define papéis permitidos
+        enum: [ 'professor', 'aluno', 'admin'], //Define papéis permitidos
         default: 'aluno'
     }
 });

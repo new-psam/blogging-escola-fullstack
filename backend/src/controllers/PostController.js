@@ -7,7 +7,16 @@ module.exports = {
     async index(req, res) {
         //console.log("--> Acessou rota GET /posts"); //Log de entrada
         try {
-            const posts = await Post.find().sort({ dataCriacao: -1});
+            // Pega a página e limite da URL (ex: ?page=2&limit=10), ou usa valores padrão
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const skip = (page - 1) * limit; // calcula quantos posts pular
+            
+            const posts = await Post.find()
+                .sort({ dataCriacao: -1})
+                .skip(skip) // Pula os posts das páginas anteriores
+                .limit(limit); //Traz só a quantidade de posts definida no limite
+
             return res.status(200).json(posts);
         } catch (err) {
             console.error("ERRO AO LISTAR POSTS:", err); 
@@ -21,7 +30,16 @@ module.exports = {
             if (!q) {
                 return res.status(400).json({ error: 'Parâmetro de busca não informado'});
             }
-            const posts = await Post.find({ $text: { $search: q}});
+
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const skip = (page - 1) * limit;
+
+            const posts = await Post.find({ $text: { $search: q}})
+                .sort({ dataCriacao: -1})
+                .skip(skip)
+                .limit(limit);
+
             return res.status(200).json(posts);
         } catch (err) {
             return res.status(500).json({ error: 'Erro na busca'});
