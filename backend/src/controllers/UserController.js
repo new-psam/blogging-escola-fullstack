@@ -18,7 +18,7 @@ module.exports = {
     async store(req, res){
         const { nome, email, password, role} = req.body;
 
-        id (!nome || !email || !password || !role) {
+        if (!nome || !email || !password || !role) {
             return res.status(400).json({ error: 'Preencha todos os campos.' });
         }
 
