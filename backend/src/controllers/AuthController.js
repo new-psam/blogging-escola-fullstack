@@ -1,59 +1,47 @@
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+
 
 module.exports = {
     async register(req, res) {
+        const { nome, email, role, firebaseUid } = req.body;
       
         try {
-         const { email } = req.body;     // Verifica se usuário já existe
+         
             if (await User.findOne({ email })) {
                 return res.status(400).send({ error: 'Usuário já existe' });
             }
 
             // Tenta criar o usuário
-            const user = await User.create(req.body);
+            const newUser = await User.create({
+                nome,
+                email,
+                role: role || 'aluno',
+                firebaseUid
+            });
 
-            // Limpa a senha para não retornar no JSON
-            user.senha = undefined;
+            return res.status(201).json(newUser);
 
-            return res.send({ user });
-
-        } catch (err) {
+        } catch (error) {
             // AQUI ESTÁ A CORREÇÃO: Retorna o erro real em vez de travar
-            console.error("Erro no Registro:", err); 
-            return res.status(400).send({ error: 'Falha no registro', details: err.message });
+            console.error("Erro no Registro:", error); 
+            return res.status(400).json({ error: 'Falha ao salvar o perfil no banco de dados.' });
         }
     },
 
-    async login(req, res) {
-        const { email, senha } = req.body;
+    // Chamado na tela de login para devolver os dados do usuário logado
+    async me(req, res){
         try {
-            // Busca usuário e senha (precisamos do campo senha que vem criptografado)
-            const user = await User.findOne({ email }).select('+senha');
+            // O req.user.FirebaseUId vem do nosso authMiddleware ( que verificou o token!)
+            const user = await User.findOne({firebaseUid: req.userFirebaseUid });
 
-            if (!user) {
-                return res.status(400).send({ error: 'Usuário não encontrado!' });
+            if (!user){
+                return res.status(404).json({ error: 'Perfil não encontrado.'});
             }
 
-            // Compara a senha enviada com a do banco
-            if (!await bcrypt.compare(senha, user.senha)) {
-                return res.status(400).send({ error: 'Senha inválida' });
-            }
-
-            // Gera Token
-            const token = jwt.sign({ id: user.id, role: user.role }, process.env.SECRET || 'segredo_escola', {
-                expiresIn: 86400,
-            });
-
-            // Remove senha do retorno
-            user.senha = undefined;
-
-            res.send({ user, token });
-
-        } catch (err) {
-            console.error("Erro no Login:", err);
-            return res.status(500).send({ error: 'Erro interno no login' });
+            return res.json(user);
+        } catch (error) {
+            console.error("Erro no /me:", error);
+            return res.status(500).json({error: 'Erro ao buscar o perfil'});
         }
     }
 };

@@ -27,6 +27,7 @@ routes.get('/posts/:id/comments', PostController.searchCom);
 
 // --- Daqui para baixo, precisa estar logado (Aluno ou Professor) ---
 routes.use(authMiddleware);
+routes.get('/auth/me', AuthController.me);
 
 // Leitura (Aluno e Professor)
 
