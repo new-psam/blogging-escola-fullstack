@@ -16,7 +16,7 @@ const isAdmin = checkRole('admin');
 
 // 1-Rotas Públicas
 routes.post('/auth/register', AuthController.register);
-routes.post('/auth/login', AuthController.login);
+//routes.post('/auth/login', AuthController.login);
 
 
 routes.get('/posts', PostController.index);
